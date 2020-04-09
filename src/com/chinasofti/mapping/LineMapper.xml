@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.dao.LineMapper" >
+  <resultMap id="BaseResultMap" type="com.chinasofti.model.Line" >
+    <id column="lineID" property="lineid" jdbcType="VARCHAR" />
+    <result column="lineTypeID" property="linetypeid" jdbcType="VARCHAR" />
+    <result column="lineName" property="linename" jdbcType="VARCHAR" />
+    <result column="days" property="days" jdbcType="VARCHAR" />
+    <result column="vehicle" property="vehicle" jdbcType="VARCHAR" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="arrange" property="arrange" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="teamBuy" property="teambuy" jdbcType="INTEGER" />
+    <result column="teamBuyPrice" property="teambuyprice" jdbcType="DECIMAL" />
+    <result column="beginTime" property="begintime" jdbcType="TIMESTAMP" />
+    <result column="endTime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="onTime" property="ontime" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <resultMap id="lineMap" type="com.chinasofti.model.Line" >
+    <id column="lineID" property="lineid" jdbcType="VARCHAR" />
+    <result column="lineTypeID" property="linetypeid" jdbcType="VARCHAR" />
+    <result column="lineName" property="linename" jdbcType="VARCHAR" />
+    <result column="days" property="days" jdbcType="VARCHAR" />
+    <result column="vehicle" property="vehicle" jdbcType="VARCHAR" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="arrange" property="arrange" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="teamBuy" property="teambuy" jdbcType="INTEGER" />
+    <result column="teamBuyPrice" property="teambuyprice" jdbcType="DECIMAL" />
+    <result column="beginTime" property="begintime" jdbcType="TIMESTAMP" />
+    <result column="endTime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="onTime" property="ontime" jdbcType="TIMESTAMP" />
+    <association property="linetype" javaType="LineType" 
+			column="linetypeid" select="selectLineTypeById">
+	</association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lineID, lineTypeID, lineName, days, vehicle, introduction, reason, arrange, price, 
+    teamBuy, teamBuyPrice, beginTime, endTime, onTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from line
+    where lineID = #{lineid,jdbcType=VARCHAR}
+  </select>
+  <!-- 订单所用 -->
+  <select id="selectLinebydd" resultType="com.chinasofti.model.Line" parameterType="java.lang.String" >
+    select * from line
+    where lineID = #{0,jdbcType=VARCHAR}
+  </select>
+  <!-- 订单详情所用 -->
+  <select id="selectLinesByidlist" resultType="com.chinasofti.model.Line" parameterType="java.lang.String" >
+    select * from line
+    where lineID = #{0,jdbcType=VARCHAR}
+  </select>
+  <select id="selectLinesByPagesMap" resultMap="lineMap">
+		select * from line limit #{startRow},#{pageSize}
+  </select>
+  <select id="selectLinesMap" resultMap="lineMap">
+		select * from line where teambuy =1  limit #{startRow},#{pageSize} 
+  </select>
+  <select id="selectLineTypeById" resultType="LineType" parameterType="string">
+		select * from linetype where linetypeid = #{line.linetypeid}
+  </select>
+  <!-- 根据linetypeid查询相应对象 -->
+  <select id="selectLinesByLinetypeid" resultType="Line" parameterType="string">
+		select * from line where linetypeid = #{0}
+  </select>
+  <!-- 根据id查询信息 -->
+  <select id="selectLinesByid" resultType="Line" parameterType="string">
+		select * from line where lineid = #{0}
+  </select>
+  
+   <select id="selectLine" resultMap="BaseMap" >
+		select * from line 
+  </select>
+  
+  <resultMap id="BaseMap" type="com.chinasofti.model.Line" >
+    <id column="lineID" property="lineid" jdbcType="VARCHAR" />
+    <result column="lineTypeID" property="linetypeid" jdbcType="VARCHAR" />
+    <result column="lineName" property="linename" jdbcType="VARCHAR" />
+    <result column="days" property="days" jdbcType="VARCHAR" />
+    <result column="vehicle" property="vehicle" jdbcType="VARCHAR" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="arrange" property="arrange" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="teamBuy" property="teambuy" jdbcType="INTEGER" />
+    <result column="teamBuyPrice" property="teambuyprice" jdbcType="DECIMAL" />
+    <result column="beginTime" property="begintime" jdbcType="TIMESTAMP" />
+    <result column="endTime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="onTime" property="ontime" jdbcType="TIMESTAMP" />
+    <collection property="picturelist" ofType="com.chinasofti.model.Line"
+				select="selectpictureByLineID"  column="lineid"><!--1对多用list collection  -->
+  	</collection>
+  	<collection property="carlist" ofType="com.chinasofti.model.Car"
+				select="selectcarByLineID"  column="lineid"><!--1对多用list collection  -->
+  	</collection>
+  </resultMap>
+  
+  <!-- 连接查询 -->
+   <select id="selectLinesByidpicture" resultMap="BaseMap" parameterType="string">
+		select * from line where lineid = #{0}
+  </select>
+  <select id="selectpictureByLineID" resultType="com.chinasofti.model.Picture" parameterType="string">
+		select * from picture where lineid = #{lineid}
+  </select>
+  <select id="selectcarByLineID" resultType="com.chinasofti.model.Car" parameterType="string">
+		select * from car where linid = #{lineid}
+  </select>
+  
+  
+  
+  
+  <select id="Linecount" resultType="int">
+		select count(*) from line 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from line
+    where lineID = #{lineid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.chinasofti.model.Line" >
+    insert into line (lineID, lineTypeID, lineName, 
+      days, vehicle, introduction, 
+      reason, arrange, price, 
+      teamBuy, teamBuyPrice, beginTime, 
+      endTime, onTime)
+    values (#{lineid,jdbcType=VARCHAR}, #{linetypeid,jdbcType=VARCHAR}, #{linename,jdbcType=VARCHAR}, 
+      #{days,jdbcType=VARCHAR}, #{vehicle,jdbcType=VARCHAR}, #{introduction,jdbcType=VARCHAR}, 
+      #{reason,jdbcType=VARCHAR}, #{arrange,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
+      #{teambuy,jdbcType=INTEGER}, #{teambuyprice,jdbcType=DECIMAL}, #{begintime,jdbcType=TIMESTAMP}, 
+      #{endtime,jdbcType=TIMESTAMP}, #{ontime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.chinasofti.model.Line" >
+    insert into line
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lineid != null" >
+        lineID,
+      </if>
+      <if test="linetypeid != null" >
+        lineTypeID,
+      </if>
+      <if test="linename != null" >
+        lineName,
+      </if>
+      <if test="days != null" >
+        days,
+      </if>
+      <if test="vehicle != null" >
+        vehicle,
+      </if>
+      <if test="introduction != null" >
+        introduction,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="arrange != null" >
+        arrange,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="teambuy != null" >
+        teamBuy,
+      </if>
+      <if test="teambuyprice != null" >
+        teamBuyPrice,
+      </if>
+      <if test="begintime != null" >
+        beginTime,
+      </if>
+      <if test="endtime != null" >
+        endTime,
+      </if>
+      <if test="ontime != null" >
+        onTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lineid != null" >
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="linetypeid != null" >
+        #{linetypeid,jdbcType=VARCHAR},
+      </if>
+      <if test="linename != null" >
+        #{linename,jdbcType=VARCHAR},
+      </if>
+      <if test="days != null" >
+        #{days,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicle != null" >
+        #{vehicle,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="arrange != null" >
+        #{arrange,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="teambuy != null" >
+        #{teambuy,jdbcType=INTEGER},
+      </if>
+      <if test="teambuyprice != null" >
+        #{teambuyprice,jdbcType=DECIMAL},
+      </if>
+      <if test="begintime != null" >
+        #{begintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ontime != null" >
+        #{ontime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chinasofti.model.Line" >
+    update line
+    <set >
+      <if test="linetypeid != null" >
+        lineTypeID = #{linetypeid,jdbcType=VARCHAR},
+      </if>
+      <if test="linename != null" >
+        lineName = #{linename,jdbcType=VARCHAR},
+      </if>
+      <if test="days != null" >
+        days = #{days,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicle != null" >
+        vehicle = #{vehicle,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="arrange != null" >
+        arrange = #{arrange,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="teambuy != null" >
+        teamBuy = #{teambuy,jdbcType=INTEGER},
+      </if>
+      <if test="teambuyprice != null" >
+        teamBuyPrice = #{teambuyprice,jdbcType=DECIMAL},
+      </if>
+      <if test="begintime != null" >
+        beginTime = #{begintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        endTime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ontime != null" >
+        onTime = #{ontime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where lineID = #{lineid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chinasofti.model.Line" >
+    update line
+    set lineTypeID = #{linetypeid,jdbcType=VARCHAR},
+      lineName = #{linename,jdbcType=VARCHAR},
+      days = #{days,jdbcType=VARCHAR},
+      vehicle = #{vehicle,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=VARCHAR},
+      reason = #{reason,jdbcType=VARCHAR},
+      arrange = #{arrange,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      teamBuy = #{teambuy,jdbcType=INTEGER},
+      teamBuyPrice = #{teambuyprice,jdbcType=DECIMAL},
+      beginTime = #{begintime,jdbcType=TIMESTAMP},
+      endTime = #{endtime,jdbcType=TIMESTAMP},
+      onTime = #{ontime,jdbcType=TIMESTAMP}
+    where lineID = #{lineid,jdbcType=VARCHAR}
+  </update>
+</mapper>

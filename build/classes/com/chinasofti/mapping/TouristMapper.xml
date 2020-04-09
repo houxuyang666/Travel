@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.dao.TouristMapper" >
+  <resultMap id="BaseResultMap" type="com.chinasofti.model.Tourist" >
+    <id column="touristID" property="touristid" jdbcType="VARCHAR" />
+    <result column="IDCard" property="idcard" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="realName" property="realname" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    touristID, IDCard, tel, realName
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tourist
+    where touristID = #{touristid,jdbcType=VARCHAR}
+  </select>
+<!-- 通过id查询 -->  
+ <select id="selectByKey" resultType="com.chinasofti.model.Tourist" parameterType="java.lang.String" >
+    select * from tourist
+    where touristID = #{0,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tourist
+    where touristID = #{touristid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.chinasofti.model.Tourist" >
+    insert into tourist (touristID, IDCard, tel, 
+      realName)
+    values (#{touristid,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, 
+      #{realname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.chinasofti.model.Tourist" >
+    insert into tourist
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="touristid != null" >
+        touristID,
+      </if>
+      <if test="idcard != null" >
+        IDCard,
+      </if>
+      <if test="tel != null" >
+        tel,
+      </if>
+      <if test="realname != null" >
+        realName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="touristid != null" >
+        #{touristid,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        #{realname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chinasofti.model.Tourist" >
+    update tourist
+    <set >
+      <if test="idcard != null" >
+        IDCard = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        realName = #{realname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where touristID = #{touristid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chinasofti.model.Tourist" >
+    update tourist
+    set IDCard = #{idcard,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      realName = #{realname,jdbcType=VARCHAR}
+    where touristID = #{touristid,jdbcType=VARCHAR}
+  </update>
+</mapper>

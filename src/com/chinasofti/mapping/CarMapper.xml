@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.dao.CarMapper" >
+  <resultMap id="BaseResultMap" type="com.chinasofti.model.Car" >
+    <id column="carID" property="carid" jdbcType="INTEGER" />
+    <result column="customerID" property="customerid" jdbcType="INTEGER" />
+    <result column="linID" property="linid" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <resultMap id="custMap" type="com.chinasofti.model.Car" >
+    <id column="carID" property="carid" jdbcType="INTEGER" />
+    <result column="customerID" property="customerid" jdbcType="INTEGER" />
+    <result column="linID" property="linid" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+     <association property="customer" javaType="Customer" 
+			column="customerid" select="selectCustById">
+	</association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    carID, customerID, linID, time
+  </sql>
+  
+  
+  <resultMap id="carLineMap" type="com.chinasofti.model.Car" >
+    <id column="carID" property="carid" jdbcType="INTEGER" />
+    <result column="customerID" property="customerid" jdbcType="INTEGER" />
+    <result column="linID" property="linid" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <collection property="linelist" ofType="com.chinasofti.model.Line"
+				select="selectCarlineidByLine"  column="linID"><!--1对多用list collection  -->
+  	</collection>
+  </resultMap>
+  
+  <select id="selectCartByLine" resultMap="carLineMap" parameterType="java.lang.Integer" >
+    select * from car
+    where customerid = #{0,jdbcType=INTEGER}
+  </select>
+  <select id="selectCarlineidByLine" resultType="Line" parameterType="string" >
+    select * from line
+    where lineid = #{linid,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from car
+    where carID = #{carid,jdbcType=INTEGER}
+  </select>
+ <select id="selectCustById" resultType="Customer" parameterType="string">
+		select * from customer where customerid = #{car.customerid}
+  </select>
+  
+  <select id="selectCartByCustId" resultType="Car" parameterType="java.lang.Integer" >
+   select * from car where customerid = #{0}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from car
+    where carID = #{carid,jdbcType=INTEGER}
+  </delete>
+ 
+   <delete id="deleteBycustomerid" parameterType="java.lang.Integer" >
+    delete from car
+    where customerid = #{0,jdbcType=INTEGER}
+  </delete>
+ 
+  <insert id="insert" parameterType="com.chinasofti.model.Car" useGeneratedKeys="true" keyProperty="carID">
+    insert into car (customerID, linID, 
+      time)
+    values (#{customerid,jdbcType=INTEGER}, #{linid,jdbcType=VARCHAR}, 
+      #{time,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.chinasofti.model.Car" >
+    insert into car
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="carid != null" >
+        carID,
+      </if>
+      <if test="customerid != null" >
+        customerID,
+      </if>
+      <if test="linid != null" >
+        linID,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="carid != null" >
+        #{carid,jdbcType=INTEGER},
+      </if>
+      <if test="customerid != null" >
+        #{customerid,jdbcType=INTEGER},
+      </if>
+      <if test="linid != null" >
+        #{linid,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chinasofti.model.Car" >
+    update car
+    <set >
+      <if test="customerid != null" >
+        customerID = #{customerid,jdbcType=INTEGER},
+      </if>
+      <if test="linid != null" >
+        linID = #{linid,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where carID = #{carid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chinasofti.model.Car" >
+    update car
+    set customerID = #{customerid,jdbcType=INTEGER},
+      linID = #{linid,jdbcType=VARCHAR},
+      time = #{time,jdbcType=TIMESTAMP}
+    where carID = #{carid,jdbcType=INTEGER}
+  </update>
+</mapper>

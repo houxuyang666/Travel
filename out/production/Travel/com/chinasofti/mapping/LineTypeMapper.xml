@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.dao.LineTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.chinasofti.model.LineType" >
+    <id column="lineTypeID" property="linetypeid" jdbcType="VARCHAR" />
+    <result column="typeName" property="typename" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+   		 <collection property="linelist" ofType="com.chinasofti.model.Line"
+				select="selectLineByLineTypeID"  column="linetypeid"><!--1对多用list collection  -->
+  		</collection>
+  </resultMap>
+   <resultMap id="lineMap" type="com.chinasofti.model.Line" >
+    <id column="lineID" property="lineid" jdbcType="VARCHAR" />
+    <result column="lineTypeID" property="linetypeid" jdbcType="VARCHAR" />
+    <result column="lineName" property="linename" jdbcType="VARCHAR" />
+    <result column="days" property="days" jdbcType="VARCHAR" />
+    <result column="vehicle" property="vehicle" jdbcType="VARCHAR" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="arrange" property="arrange" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="teamBuy" property="teambuy" jdbcType="INTEGER" />
+    <result column="teamBuyPrice" property="teambuyprice" jdbcType="DECIMAL" />
+    <result column="beginTime" property="begintime" jdbcType="TIMESTAMP" />
+    <result column="endTime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="onTime" property="ontime" jdbcType="TIMESTAMP" />
+    <collection property="picturelist" ofType="com.chinasofti.model.Picture"
+				select="selectPictureByLineID"  column="lineid"><!--1对多用list collection  -->
+  		</collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lineTypeID, typeName, time, icon
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from linetype
+    where lineTypeID = #{linetypeid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectLineTypeByPagesMap" resultType="LineType" parameterType="map">
+		select * from linetype limit #{startRow},#{pageSize}
+  </select>
+ <!--获取路线名称供添加路线使用-->
+  <select id="select" resultType="com.chinasofti.model.LineType">
+    select * from linetype
+  </select>
+  <select id="Linetypecount" resultType="int">
+		select count(*) from linetype 
+  </select>
+  <select id="selectLineType" resultType="com.chinasofti.model.LineType">
+    select * from linetype
+  </select>
+  <!-- 根据id查询 -->
+  <select id="selectByID" parameterType="java.lang.String" resultType="com.chinasofti.model.LineType">
+     select * from linetype where lineTypeID = #{linetypeid,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <!-- 根据名称查询Id -->
+	<select id="selectByTypeName" parameterType="java.lang.String" resultMap="BaseResultMap">
+     select * from linetype where typeName = #{0,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据linetype中的id查出来line中的符合要求的lineid 在查询 price中符合lineid的icon -->
+  <select id="selectLineByLineTypeID" parameterType="java.lang.String" resultMap="lineMap">
+     select * from line where linetypeid = #{linetypeid,jdbcType=VARCHAR}
+  </select>
+   <select id="selectPictureByLineID" parameterType="java.lang.String" resultType="com.chinasofti.model.Picture">
+     select * from picture where lineid = #{lineid,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  
+  <!-- 根据lineid查询linetype对象 -->
+  <select id="selectLineTypesBylineid" parameterType="java.lang.String" resultType="com.chinasofti.model.LineType">
+     select * from linetype where linetypeid = #{0,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from linetype
+    where lineTypeID = #{linetypeid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.chinasofti.model.LineType" >
+    insert into linetype (lineTypeID, typeName, time, 
+      icon)
+    values (#{linetypeid,jdbcType=VARCHAR}, #{typename,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, 
+      #{icon,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.chinasofti.model.LineType" >
+    insert into linetype
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="linetypeid != null" >
+        lineTypeID,
+      </if>
+      <if test="typename != null" >
+        typeName,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="linetypeid != null" >
+        #{linetypeid,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null" >
+        #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chinasofti.model.LineType" >
+    update linetype
+    <set >
+      <if test="typename != null" >
+        typeName = #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where lineTypeID = #{linetypeid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chinasofti.model.LineType" >
+    update linetype
+    set typeName = #{typename,jdbcType=VARCHAR},
+      time = #{time,jdbcType=TIMESTAMP},
+      icon = #{icon,jdbcType=VARCHAR}
+    where lineTypeID = #{linetypeid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateName" parameterType="java.lang.String" >
+    update linetype
+    set icon = #{1,jdbcType=VARCHAR}
+    where lineTypeID = #{0,jdbcType=VARCHAR}
+  </update>
+  <update id="updateNameAndIcon" parameterType="java.lang.String" >
+    update linetype
+    set typeName = #{1,jdbcType=VARCHAR},
+    	icon = #{2,jdbcType=VARCHAR}
+    where lineTypeID = #{0,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

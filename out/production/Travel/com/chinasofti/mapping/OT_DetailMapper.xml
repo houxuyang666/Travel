@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.dao.OT_DetailMapper" >
+  <resultMap id="BaseResultMap" type="com.chinasofti.model.OT_Detail" >
+    <id column="otID" property="otid" jdbcType="INTEGER" />
+    <result column="odID" property="odid" jdbcType="VARCHAR" />
+    <result column="touristID" property="touristid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    otID, odID, touristID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ot_detail
+    where otID = #{otid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ot_detail
+    where otID = #{otid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.chinasofti.model.OT_Detail" >
+    insert into ot_detail (otID, odID, touristID
+      )
+    values (#{otid,jdbcType=INTEGER}, #{odid,jdbcType=VARCHAR}, #{touristid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.chinasofti.model.OT_Detail" >
+    insert into ot_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="otid != null" >
+        otID,
+      </if>
+      <if test="odid != null" >
+        odID,
+      </if>
+      <if test="touristid != null" >
+        touristID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="otid != null" >
+        #{otid,jdbcType=INTEGER},
+      </if>
+      <if test="odid != null" >
+        #{odid,jdbcType=VARCHAR},
+      </if>
+      <if test="touristid != null" >
+        #{touristid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chinasofti.model.OT_Detail" >
+    update ot_detail
+    <set >
+      <if test="odid != null" >
+        odID = #{odid,jdbcType=VARCHAR},
+      </if>
+      <if test="touristid != null" >
+        touristID = #{touristid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where otID = #{otid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chinasofti.model.OT_Detail" >
+    update ot_detail
+    set odID = #{odid,jdbcType=VARCHAR},
+      touristID = #{touristid,jdbcType=VARCHAR}
+    where otID = #{otid,jdbcType=INTEGER}
+  </update>
+</mapper>
